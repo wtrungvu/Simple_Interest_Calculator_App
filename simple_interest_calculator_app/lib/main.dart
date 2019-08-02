@@ -44,6 +44,8 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
 
   String displayResult = "";
 
+  var _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -55,15 +57,15 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
   Widget build(BuildContext context) {
     TextStyle textStyle = Theme.of(context).textTheme.title;
     return SingleChildScrollView(
-      child: Center(
+      child: Form(
+        key: _formKey,
         child: Container(
-          alignment: Alignment.center,
           margin: const EdgeInsets.all(20.0),
           // color: Colors.black,
           child: Column(
             children: <Widget>[
               Container(
-                margin: const EdgeInsets.only(top: 30.0),
+                margin: const EdgeInsets.only(top: 20.0),
                 child: Image(
                   width: 150,
                   height: 150,
@@ -72,77 +74,88 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
               ),
               Container(
                 margin: const EdgeInsets.only(top: 50.0),
-                child: TextField(
-                    controller: principalController,
-                    style: textStyle,
-                    keyboardType: TextInputType.number,
-                    decoration: new InputDecoration(
-                        labelText: "Số tiền gốc ban đầu",
-                        labelStyle: textStyle,
-                        hintText: "Ví dụ: 50000đ",
-                        fillColor: Colors.white,
-                        border: new OutlineInputBorder(
-                          borderRadius: new BorderRadius.circular(10.0),
-                          borderSide: new BorderSide(),
-                        ),
-                        prefixIcon: Icon(Icons.attach_money))),
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 20.0),
-                child: TextField(
-                    controller: roiController,
-                    style: textStyle,
-                    keyboardType: TextInputType.number,
-                    decoration: new InputDecoration(
-                        labelText: "Số lãi suất",
-                        labelStyle: textStyle,
-                        hintText: "Ví dụ: 10%",
-                        fillColor: Colors.white,
-                        border: new OutlineInputBorder(
-                          borderRadius: new BorderRadius.circular(10.0),
-                          borderSide: new BorderSide(),
-                        ),
-                        prefixIcon: Icon(Icons.rate_review))),
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 20.0),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: TextField(
-                          controller: termController,
-                          style: textStyle,
-                          keyboardType: TextInputType.number,
-                          decoration: new InputDecoration(
-                              labelText: "Kỳ hạn",
-                              hintText: "10 năm",
-                              labelStyle: textStyle,
-                              fillColor: Colors.white,
-                              border: new OutlineInputBorder(
-                                borderRadius: new BorderRadius.circular(10.0),
-                                borderSide: new BorderSide(),
-                              ),
-                              prefixIcon: Icon(Icons.date_range))),
-                    ),
-                    Container(
-                      width: 10,
-                    ),
-                    Expanded(
-                      child: DropdownButton<String>(
-                        style: textStyle,
-                        items: _currencies.map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (String newValueSelected) {
-                          _onDropDownItemSelected(newValueSelected);
-                        },
-                        value: _currentItemSelected,
+                child: TextFormField(
+                  controller: principalController,
+                  style: textStyle,
+                  keyboardType: TextInputType.number,
+                  decoration: new InputDecoration(
+                      labelText: "Số tiền gốc ban đầu",
+                      labelStyle: textStyle,
+                      hintText: "Ví dụ: 50000đ",
+                      fillColor: Colors.white,
+                      border: new OutlineInputBorder(
+                        borderRadius: new BorderRadius.circular(10.0),
+                        borderSide: new BorderSide(),
                       ),
-                    ),
-                  ],
+                      prefixIcon: Icon(Icons.attach_money)),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return "Vui lòng nhập đầy đủ số tiền gốc ban đầu!";
+                    }
+                  },
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 20.0),
+                child: TextFormField(
+                  controller: roiController,
+                  style: textStyle,
+                  keyboardType: TextInputType.number,
+                  decoration: new InputDecoration(
+                      labelText: "Số lãi suất",
+                      labelStyle: textStyle,
+                      hintText: "Ví dụ: 10%",
+                      fillColor: Colors.white,
+                      border: new OutlineInputBorder(
+                        borderRadius: new BorderRadius.circular(10.0),
+                        borderSide: new BorderSide(),
+                      ),
+                      prefixIcon: Icon(Icons.rate_review)),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return "Vui lòng nhập đầy đủ số lãi !";
+                    }
+                  },
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 20.0),
+                child: TextFormField(
+                  controller: termController,
+                  style: textStyle,
+                  keyboardType: TextInputType.number,
+                  decoration: new InputDecoration(
+                      labelText: "Số năm kỳ hạn",
+                      hintText: "10 năm",
+                      labelStyle: textStyle,
+                      fillColor: Colors.white,
+                      border: new OutlineInputBorder(
+                        borderRadius: new BorderRadius.circular(10.0),
+                        borderSide: new BorderSide(),
+                      ),
+                      prefixIcon: Icon(Icons.date_range)),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return "Vui lòng nhập đầy đủ số năm kỳ hạn!";
+                    }
+                  },
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 20.0),
+                width: double.infinity,
+                child: DropdownButton<String>(
+                  style: textStyle,
+                  items: _currencies.map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String newValueSelected) {
+                    _onDropDownItemSelected(newValueSelected);
+                  },
+                  value: _currentItemSelected,
                 ),
               ),
               Container(
@@ -161,7 +174,9 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
                           textColor: Colors.white,
                           onPressed: () {
                             setState(() {
-                              displayResult = _calculateInterested();
+                              if (_formKey.currentState.validate()) {
+                                displayResult = _calculateInterested();
+                              }
                             });
                           },
                         ),
